@@ -8,9 +8,7 @@ resource "aws_vpc" "main" {
     {
         Name = var.project_name
     },
-    {
-        vpc_tags=var.vpc_tags
-    }
+    var.vpc_tags
   )
 }
 resource "aws_internet_gateway" "igw" {
@@ -18,9 +16,7 @@ resource "aws_internet_gateway" "igw" {
 
   tags = merge(
     var.common_tags,
-    {
-        Name = var.igw_tags
-    },
+    var.igw_tags,
     {
         Name = var.project_name
     }
@@ -78,7 +74,8 @@ resource "aws_route_table" "public_rt" {
     var.common_tags,
     {
       Name = "${var.project_name}-public_rt"
-    }
+    },
+    var.public_route_table_tags
   )
 }
 resource "aws_eip" "elastic_ip" {
