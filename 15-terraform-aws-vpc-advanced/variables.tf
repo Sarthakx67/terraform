@@ -22,7 +22,7 @@ variable "igw_tags" {
   default = {}
 }
 variable "availability_zone" {
-  
+  default = {}
 }
 variable "public_subnet_cidr_block" {
   type = list

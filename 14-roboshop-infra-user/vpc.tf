@@ -16,6 +16,6 @@ module "vpc" {
   database_subnet_cidr_block = var.database_subnet_cidr_block
   #craeting internet gateway
   #creating public route table
-  
+
 }
 

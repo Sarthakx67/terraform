@@ -3,25 +3,16 @@ variable "cidr_block" {
 }
 variable "common_tags" {
   default = {
-    Project = "roboshop-vpc",
+    Project = "amazon-infra",
     Environment = "DEV"
     Terraform = true
   }
 }
 variable "project_name" {
-  default = "roboshop"
-}
-variable "vpc_tags" {
-    default = "roboshop-vpc"
-}
-variable "igw_tags" {
-    default = "roboshop-igw"
+  default = "amazon"
 }
 variable "public_subnet_cidr_block" {
   default = ["10.0.1.0/24","10.0.2.0/24"]
-}
-variable "availability_zone" {
-  default = ["ap-south-1a","ap-south-1b"]
 }
 variable "private_subnet_cidr_block" {
   default = ["10.0.11.0/24","10.0.12.0/24"]
