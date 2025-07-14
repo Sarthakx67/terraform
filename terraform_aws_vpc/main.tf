@@ -26,7 +26,7 @@ resource "aws_subnet" "public_subnet" {           # loop HERE
     var.common_tags, #this is also a map
     {
         Name = var.public_subnet_name[count.index] #this is a map
-    }
+    } # here we are providing public_subnet_name which is "tuple" as map 
   )
 }
 resource "aws_subnet" "private_subnet" {           # loop HERE
@@ -79,7 +79,7 @@ resource "aws_route_table_association" "public_subnet_association" {
   subnet_id = element(aws_subnet.public_subnet[*].id, count.index)
 
 #  fucntion --> element(aws_subnet.public_subnet[*].id, count.index)
-# above function will fetch list of subnets which are "public-subnet-1" and "public-subnet-2"
+#  above function will fetch list of subnets which are "public-subnet-1" and "public-subnet-2"
 #  out of which "count.index" will select all list and perform action
 
   route_table_id = aws_route_table.public_rt.id

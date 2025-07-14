@@ -4,8 +4,8 @@ variable "cidr_block" {
 variable "common_tags" {
   default = {
    Project = "roboshop"
-   Environment = "DEV"
-   Terraform = "true"
+   Environment = "DEV"   # we are providing comman tags as map
+   Terraform = "true"    # so we didnt have to change input value in main.tf for common_tags
   }
 }
 variable "vpc_tags" {
@@ -15,14 +15,14 @@ variable "vpc_tags" {
 }
 variable "internet_gateway_tags" {
   default = {
-    Name = "roboshop-igw"
+    Name = "roboshop-igw"  
   }
 }
 variable "public_subnet_cidr" {
   default = ["10.0.1.0/24","10.0.2.0/24"]
 }
 variable "public_subnet_name" {
-  default = ["roboshop-public-subnet-1","roboshop-public-subnet-2"]
+  default = ["roboshop-public-subnet-1","roboshop-public-subnet-2"] # we are providing as tuple/string so we have to change it as map in main.tf
 }
 variable "availability_zone" {
   default = ["ap-south-1a","ap-south-1b"]

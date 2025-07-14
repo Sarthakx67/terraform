@@ -4,7 +4,7 @@ resource "aws_instance" "for-loop" {
   instance_type = each.value
 
   tags = {
-   name = each.key
+   Name = each.key
   }
 }
 
