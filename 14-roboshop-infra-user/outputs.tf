@@ -16,3 +16,6 @@ output "private_subnet_ids" {
 output "database_subnet_ids" {
   value = local.database_subnet_ids
 }
+# output "aws_ami" {
+#   value = data.aws_ami.roboshop-ami
+# }

@@ -9,13 +9,9 @@ module "vpc" {
   igw_tags = var.igw_tags
   # craeting public subnet
   public_subnet_cidr_block = var.public_subnet_cidr_block
-  availability_zone = var.availability_zone
   # craeting private subnet
   private_subnet_cidr_block = var.private_subnet_cidr_block
   #craeting database subnet
   database_subnet_cidr_block = var.database_subnet_cidr_block
-  #craeting internet gateway
-  #creating public route table
-
 }
 

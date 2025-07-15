@@ -8,7 +8,9 @@ resource "aws_vpc" "main" {
     {
         Name = var.project_name
     },
-    var.vpc_tags
+    {
+      vpc_tags = var.vpc_tags
+    }
   )
 }
 resource "aws_internet_gateway" "igw" {
@@ -16,7 +18,9 @@ resource "aws_internet_gateway" "igw" {
 
   tags = merge(
     var.common_tags,
-    var.igw_tags,
+    {
+      igw_tags = var.igw_tags
+    },
     {
         Name = var.project_name
     }
