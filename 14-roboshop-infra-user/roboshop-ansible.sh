@@ -3,7 +3,7 @@
 DATE=$(date +%F)
 LOGSDIR=/tmp
 
-LOGFILE=$LOGSDIR/$0-$DATE.log
+LOGFILE="$LOGSDIR/roboshop-ansible-$DATE.log"
 R="\e[31m"
 G="\e[32m"
 N="\e[0m"
@@ -18,7 +18,6 @@ VALIDATE(){
         echo -e "$2 ... $G SUCCESS $N"
     fi
 }
-chmod 700 EC2-key.pem
 yum install epel-release -y &>>$LOGFILE
 VALIDATE $? "Validate Download Of Extra Packages For Enterprise Linux"
 yum install ansible -y &>>$LOGFILE
@@ -28,6 +27,7 @@ VALIDATE $? "Validate Change Of Directory"
 git clone https://github.com/Sarthakx67/RoboShop-Ansible-Roles.git &>>$LOGFILE
 VALIDATE $? "Validate Cloning Of Repository"
 cd RoboShop-Ansible-Roles
+chmod 700 EC2-key.pem
 ansible-playbook -i inventory -e component=mongodb main.yaml &>>$LOGFILE
 VALIDATE $? "Validate Installation Of MongoDB-Component"
 ansible-playbook -i inventory -e component=catalogue main.yaml &>>$LOGFILE
@@ -38,6 +38,8 @@ ansible-playbook -i inventory -e component=user main.yaml &>>$LOGFILE
 VALIDATE $? "Validate Installation Of User-Component"
 ansible-playbook -i inventory -e component=cart main.yaml &>>$LOGFILE
 VALIDATE $? "Validate Installation Of Cart-Component"
+ansible-playbook -i inventory -e component=web-server main.yaml &>>$LOGFILE
+VALIDATE $? "Validate Installation Of Web-Component"
 ansible-playbook -i inventory -e component=mysql main.yaml &>>$LOGFILE
 VALIDATE $? "Validate Installation Of Mysql-Component"
 ansible-playbook -i inventory -e component=shipping main.yaml &>>$LOGFILE
