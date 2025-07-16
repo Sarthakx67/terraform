@@ -8,7 +8,7 @@ module "records" {
         type    = "A"
         ttl     = 1
         records = [
-            each.key == "Web" ? each.value.public_ip : each.value.private_ip
+            each.key == "web" ? each.value.public_ip : each.value.private_ip
         ]
     }
   ]

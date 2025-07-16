@@ -43,28 +43,22 @@ variable "security_group_ingress_rule" {
       from_port   = 0
       protocol    = "tcp"
       to_port     = 0
-    },
-    {
-      description = "allow ssh"
-      cidr_blocks = ["0.0.0.0/0"]
-      from_port   = 22
-      protocol    = "tcp"
-      to_port     = 22
-      }
+    }
   ]
 }
 variable "instances" {
   default = {
-    MongoDB = "t2.micro"
-    MySQL = "t2.micro"
-    Redis = "t2.micro"
-    RabbitMQ = "t2.micro"
-    Catalogue = "t2.micro"
-    User = "t2.micro"
-    Cart = "t2.micro"
-    Shipping = "t2.micro"
-    Payment = "t2.micro"
-    Web = "t2.micro"
+    mongodb = "t2.micro"
+    mysql = "t2.micro"
+    redis = "t2.micro"
+    rabbitmq = "t2.micro"
+    catalogue = "t2.micro"
+    user = "t2.micro"
+    cart = "t2.micro"
+    shipping = "t2.micro"
+    payment = "t2.micro"
+    web = "t2.micro" 
+    dispatch = "t2.micro"
   }
 }
 variable "zone_name" {

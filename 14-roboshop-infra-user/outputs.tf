@@ -1,9 +1,8 @@
 # # for user to access output provided by module developer
+
 # output "vpc_id" {
 #   value = module.vpc.vpc_id # convention is --> module.<name>.<output-variable-name>
 # }
-
-
 # output "azs" {
 #   value = module.vpc.azs
 # } 

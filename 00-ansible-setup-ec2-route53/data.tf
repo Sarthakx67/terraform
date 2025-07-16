@@ -18,6 +18,6 @@ data "aws_ami" "roboshop-ami" {
     values = ["hvm"]
   }
 }
-data "template_file" "user_data" {
-  template = "${file("roboshop-ansible.sh")}"
+data "aws_security_group" "allow-all" {
+  id = "sg-0fd7e0e345dcc6e5b"  
 }

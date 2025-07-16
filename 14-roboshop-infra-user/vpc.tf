@@ -7,11 +7,11 @@ module "vpc" {
   vpc_tags = var.vpc_tags
   # creating internet gateway
   igw_tags = var.igw_tags
-  # craeting public subnet
+  # creating public subnet
   public_subnet_cidr_block = var.public_subnet_cidr_block
-  # craeting private subnet
+  # creating private subnet
   private_subnet_cidr_block = var.private_subnet_cidr_block
-  #craeting database subnet
+  #creating database subnet
   database_subnet_cidr_block = var.database_subnet_cidr_block
 }
 
