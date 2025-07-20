@@ -1,3 +1,12 @@
+data "aws_ssm_parameter" "roboshop-vpc-id" {
+  name  = "/${var.project_name}/${var.env}/vpc_id"
+}
+data "aws_ssm_parameter" "vpn_sg_id" {
+  name  = "/${var.project_name}/${var.env}/vpn_sg_id"
+}
+data "aws_ssm_parameter" "database_subnet_ids" {
+  name  = "/${var.project_name}/${var.env}/database_subnet_ids"
+}
 data "aws_ami" "roboshop-ami" {
   most_recent      = true
   name_regex       = "AlmaLinux OS 8.10.20240820 x86_64-c076b20a-2305-4771-823f-944909847a05"
@@ -17,7 +26,4 @@ data "aws_ami" "roboshop-ami" {
     name   = "virtualization-type"
     values = ["hvm"]
   }
-}
-data "template_file" "user_data" {
-  template = "${file("roboshop-ansible.sh")}"
 }

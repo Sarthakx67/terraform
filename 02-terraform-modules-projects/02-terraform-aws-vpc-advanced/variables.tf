@@ -2,6 +2,9 @@
 variable "cidr_block" {
   
 }
+variable "env" {
+  
+}
 # optional becuse we gave default values
 variable "enable_dns_hostnames" {
   default = true
@@ -56,4 +59,16 @@ variable "database_route_table_tags" {
 }
 variable "db_subnet_group_tags" {
   default = {}
+}
+variable "is_peering_required" {
+  default = false
+}
+variable "requestor_vpc_id" {
+  
+}
+variable "default_route_table_id" {
+  
+}
+variable "default_vpc_cidr" {
+  
 }
