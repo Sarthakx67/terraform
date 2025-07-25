@@ -1,5 +1,5 @@
 module "vpc" {
-  source = "../../02-terraform-aws-vpc-advanced"
+  source = "../../02-terraform-modules-projects/02-terraform-aws-vpc-advanced"
   # creating vpc
   cidr_block = var.cidr_block 
   common_tags = var.common_tags

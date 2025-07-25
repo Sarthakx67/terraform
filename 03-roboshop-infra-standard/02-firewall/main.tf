@@ -1,5 +1,5 @@
 module "vpn_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "roboshop-vpn"
   sg_description = "allowing all ports from home ip"
   project_name = var.project_name
@@ -13,7 +13,7 @@ module "vpn_sg" {
   )
 }
 module "mongodb_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "mongodb"
   sg_description = "allowing traffic"
   project_name = var.project_name
@@ -26,7 +26,7 @@ module "mongodb_sg" {
   )
 }
 module "catalogue_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "catalogue_sg"
   sg_description = "allowing traffic"
   project_name = var.project_name
@@ -39,7 +39,7 @@ module "catalogue_sg" {
   )
 }
 module "app_alb_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "app_alb_sg"
   sg_description = "allowing traffic"
   project_name = var.project_name
@@ -52,7 +52,7 @@ module "app_alb_sg" {
   )
 }
 module "web_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "web_sg"
   sg_description = "allowing traffic"
   project_name = var.project_name
@@ -65,7 +65,7 @@ module "web_sg" {
   )
 }
 module "web_alb_sg" {
-  source = "../../03-terraform-aws-security-group"
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "web_alb_sg"
   sg_description = "allowing traffic"
   project_name = var.project_name
