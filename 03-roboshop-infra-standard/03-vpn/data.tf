@@ -1,14 +1,14 @@
-data "aws_vpc" "default" {
-  default = true
-}
-data "aws_subnets" "default" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-data "http" "myip" {
-  url = "https://ipv4.icanhazip.com"
+# data "aws_vpc" "default" {
+#   default = true
+# }
+# data "aws_subnets" "default" {
+#   filter {
+#     name   = "vpc-id"
+#     values = [data.aws_vpc.default.id]
+#   }
+# }
+data "aws_ssm_parameter" "vpn_sg_id" {
+  name  = "/${var.project_name}/${var.env}/vpn_sg_id"
 }
 data "aws_ami" "roboshop-ami" {
   most_recent      = true
