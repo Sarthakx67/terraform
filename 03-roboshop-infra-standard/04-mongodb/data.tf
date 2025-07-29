@@ -1,11 +1,5 @@
-data "aws_ssm_parameter" "roboshop-vpc-id" {
-  name  = "/${var.project_name}/${var.env}/vpc_id"
-}
-data "aws_ssm_parameter" "vpn_sg_id" {
-  name  = "/${var.project_name}/${var.env}/vpn_sg_id"
-}
-data "aws_ssm_parameter" "database_subnet_ids" {
-  name  = "/${var.project_name}/${var.env}/database_subnet_ids"
+data "aws_ssm_parameter" "mongodb_sg_id" {
+  name  = "/${var.project_name}/${var.env}/mongodb_sg_id"
 }
 data "aws_ami" "roboshop-ami" {
   most_recent      = true
