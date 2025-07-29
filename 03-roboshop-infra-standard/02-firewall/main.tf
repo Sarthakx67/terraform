@@ -1,3 +1,4 @@
+# creating vpn security group
 module "vpn_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "roboshop-vpn"
@@ -12,6 +13,7 @@ module "vpn_sg" {
     }
   )
 }
+# creating mongodb security group
 module "mongodb_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "mongodb"
@@ -25,6 +27,7 @@ module "mongodb_sg" {
     }
   )
 }
+# creating catalogue security group
 module "catalogue_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "catalogue_sg"
@@ -38,6 +41,8 @@ module "catalogue_sg" {
     }
   )
 }
+# creating application alb security group to distribute traffic betting applications
+
 module "app_alb_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "app_alb_sg"
@@ -50,6 +55,8 @@ module "app_alb_sg" {
         component = "app_alb_sg"
     }
   )
+
+# creating web server security group
 }
 module "web_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
@@ -64,6 +71,8 @@ module "web_sg" {
     }
   )
 }
+
+# creating web alb security group to distribute traffic between multiple web
 module "web_alb_sg" {
   source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
   sg_name = "web_alb_sg"
@@ -77,6 +86,8 @@ module "web_alb_sg" {
     }
   )
 }
+
+# creating aws security group for vpn which should only enable access from my ip
 resource "aws_security_group_rule" "vpn" {
   security_group_id = module.vpn_sg.security_group_id
   type = "ingress"
@@ -85,6 +96,8 @@ resource "aws_security_group_rule" "vpn" {
   protocol = "tcp"
   to_port     = 65535
 }
+
+# creating security group rule for mongodb sg only enabling port 22 for ssh by vpn
 resource "aws_security_group_rule" "mongodb_vpn" {
   # providing mongodb sg 
   security_group_id = module.mongodb_sg.security_group_id
@@ -95,6 +108,8 @@ resource "aws_security_group_rule" "mongodb_vpn" {
   protocol = "tcp"
   to_port     = 22
 }
+
+# creating security group rule for mongodb to only connect with catalogue by allowing poet 27107
 resource "aws_security_group_rule" "mongodb_catalogue" {
   # providing mongodb sg 
   security_group_id = module.mongodb_sg.security_group_id
@@ -105,6 +120,8 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
   protocol = "tcp"
   to_port     = 27017
 }
+
+# creating security group rule for catalogue to only connect with vpn on port 22 by ssh
 resource "aws_security_group_rule" "catalogue_vpn" {
   # providing sg 
   security_group_id = module.catalogue_sg.security_group_id
@@ -115,6 +132,8 @@ resource "aws_security_group_rule" "catalogue_vpn" {
   protocol = "tcp"
   to_port     = 22
 }
+
+# creating sg rule for connecting app alb with catalogue on port 8080
 resource "aws_security_group_rule" "catalogue_app_alb" {
   # providing  sg 
   security_group_id = module.catalogue_sg.security_group_id
@@ -125,6 +144,8 @@ resource "aws_security_group_rule" "catalogue_app_alb" {
   protocol = "tcp"
   to_port     = 8080 
 }
+
+# giving ssh access for vpn to connect with app alb on port 22
 resource "aws_security_group_rule" "app_alb_vpn" {
   # providing  sg 
   security_group_id = module.app_alb_sg.security_group_id
@@ -135,6 +156,8 @@ resource "aws_security_group_rule" "app_alb_vpn" {
   protocol = "tcp"
   to_port     = 22
 }
+
+# creating sg rule for allowing connection only from web to app alb on port 80 
 resource "aws_security_group_rule" "app_alb_web" {
   # providing  sg 
   security_group_id = module.app_alb_sg.security_group_id 
@@ -145,6 +168,8 @@ resource "aws_security_group_rule" "app_alb_web" {
   protocol = "tcp"
   to_port     = 80
 }
+
+# craeting sg rule for allowing web-server to only connect with web-alb on port 80
 resource "aws_security_group_rule" "web_web_alb" {
   # providing  sg 
   security_group_id = module.web_sg.security_group_id
@@ -155,6 +180,8 @@ resource "aws_security_group_rule" "web_web_alb" {
   protocol = "tcp"
   to_port     = 80
 }
+
+# creating sg rule for allowing vpn connection to web-server on port 22
 resource "aws_security_group_rule" "web_vpn" {
   # providing sg 
   security_group_id = module.vpn_sg.security_group_id
@@ -165,6 +192,8 @@ resource "aws_security_group_rule" "web_vpn" {
   protocol = "tcp"
   to_port     = 22
 }
+
+# creating sg rule for connecting web alb with internet on port no 80 
 resource "aws_security_group_rule" "web_alb_internet" {
   # providing  sg 
   security_group_id = module.web_alb_sg.security_group_id
