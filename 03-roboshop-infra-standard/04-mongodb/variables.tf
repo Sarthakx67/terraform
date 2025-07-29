@@ -12,3 +12,6 @@ variable "project_name" {
 variable "env" {
   default = "dev"
 }
+variable "zone_name" {
+  default = "stallions.space"
+}
