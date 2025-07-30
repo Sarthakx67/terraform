@@ -18,7 +18,7 @@ module "records" {
       type = "A"
       ttl = 1
       records = [
-        module.mongodb_instance.private_ip
+        aws_instance.mongodb_instance.private_ip
       ]
     }
   ]
