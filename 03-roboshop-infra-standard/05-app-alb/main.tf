@@ -4,7 +4,7 @@ resource "aws_lb" "app_alb" {
   internal           = true # this is a private load balancer so will keep internal as true
   load_balancer_type = "application"
   security_groups    = [data.aws_ssm_parameter.app_alb_sg_id.value]
-  subnets            = split(",",data.aws_ssm_parameter.private_subnet_id.value )
+  subnets            = split(",",data.aws_ssm_parameter.private_subnet_ids.value)
 #   enable_deletion_protection = true to prevent accedental deletion
   tags = var.common_tags
 }
