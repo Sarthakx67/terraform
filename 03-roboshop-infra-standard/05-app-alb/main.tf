@@ -10,7 +10,7 @@ resource "aws_lb" "app_alb" {
 }
 
 # this will create listners
-resource "aws_lb_listener" "app_alb-listner" {
+resource "aws_lb_listener" "app_alb_listner" {
   load_balancer_arn = aws_lb.app_alb.arn
   port              = "80"
   protocol          = "HTTP"
