@@ -134,15 +134,25 @@ resource "aws_security_group_rule" "catalogue_vpn" {
 }
 
 # creating sg rule for connecting app alb with catalogue on port 8080
-resource "aws_security_group_rule" "catalogue_app_alb" {
+resource "aws_security_group_rule" "app_alb_catalogue" {
   # providing  sg 
-  security_group_id = module.catalogue_sg.security_group_id
+  security_group_id = module.app_alb_sg.security_group_id
   type = "ingress"
   # source is the main sg to connect  sg to access connection from
-  source_security_group_id = module.app_alb_sg.security_group_id
-  from_port   = 8080
+  source_security_group_id = module.catalogue_sg.security_group_id
+  from_port   = 80
   protocol = "tcp"
-  to_port     = 8080 
+  to_port     = 80 
+}
+
+resource "aws_security_group_rule" "catalogue_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.catalogue_sg.security_group_id
 }
 
 # giving ssh access for vpn to connect with app alb on port 22
@@ -169,7 +179,7 @@ resource "aws_security_group_rule" "app_alb_web" {
   to_port     = 80
 }
 
-# craeting sg rule for allowing web-server to only connect with web-alb on port 80
+# creating sg rule for allowing web-server to only connect with web-alb on port 80
 resource "aws_security_group_rule" "web_web_alb" {
   # providing  sg 
   security_group_id = module.web_sg.security_group_id
@@ -203,4 +213,16 @@ resource "aws_security_group_rule" "web_alb_internet" {
   from_port   = 80
   protocol = "tcp"
   to_port     = 80
+}
+
+# creating sg rule for connecting web alb with internet on port no 443/HTTPS 
+resource "aws_security_group_rule" "web_alb_internet_https" {
+  # providing  sg 
+  security_group_id = module.web_alb_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  cidr_blocks = ["0.0.0.0/0"]
+  from_port   = 443
+  protocol = "tcp"
+  to_port     = 443
 }
