@@ -22,6 +22,7 @@ resource "aws_launch_template" "catalogue" {
   image_id = data.aws_ami.roboshop-ami.id
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t2.micro"
+  key_name = "EC2-key"
 
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
   
