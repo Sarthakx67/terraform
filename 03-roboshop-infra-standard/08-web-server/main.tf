@@ -3,7 +3,6 @@ module "web" {
   project_name = var.project_name
   env = var.env
   common_tags = var.common_tags
-
   #target group
   health_check = var.health_check
   target_group_port = var.target_group_port
@@ -11,8 +10,18 @@ module "web" {
 
   #launch template
   image_id = data.aws_ami.roboshop-ami.id
+  key_name = "EC2-key"
   security_group_id = data.aws_ssm_parameter.web_sg_id.value
-#   user_data = 
+  user_data     = base64encode(<<-EOF
+                  #!/bin/bash
+                  sudo su -
+                  setenforce 0
+                  yum install epel-release -y
+                  yum install nginx -y
+                  systemctl enable nginx
+                  systemctl start nginx
+                  EOF
+                )
   launch_template_tags = var.launch_template_tags
 
   #autoscaling
