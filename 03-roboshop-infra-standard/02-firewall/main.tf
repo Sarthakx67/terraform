@@ -133,18 +133,6 @@ resource "aws_security_group_rule" "catalogue_vpn" {
   to_port     = 22
 }
 
-# creating sg rule for connecting app alb with catalogue on port 8080
-resource "aws_security_group_rule" "app_alb_catalogue" {
-  # providing  sg 
-  security_group_id = module.app_alb_sg.security_group_id
-  type = "ingress"
-  # source is the main sg to connect  sg to access connection from
-  source_security_group_id = module.catalogue_sg.security_group_id
-  from_port   = 80
-  protocol = "tcp"
-  to_port     = 80 
-}
-
 resource "aws_security_group_rule" "catalogue_app_alb" {
   type              = "ingress"
   description = "Allowing port number 8080 from APP ALB"
@@ -194,10 +182,10 @@ resource "aws_security_group_rule" "web_web_alb" {
 # creating sg rule for allowing vpn connection to web-server on port 22
 resource "aws_security_group_rule" "web_vpn" {
   # providing sg 
-  security_group_id = module.vpn_sg.security_group_id
+  security_group_id = module.web_sg.security_group_id
   type = "ingress"
   # source is the main sg to connect  sg to access connection from
-  source_security_group_id = module.web_sg.security_group_id
+  source_security_group_id = module.vpn_sg.security_group_id
   from_port   = 22
   protocol = "tcp"
   to_port     = 22
