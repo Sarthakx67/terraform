@@ -23,6 +23,7 @@ resource "aws_launch_template" "catalogue" {
   instance_initiated_shutdown_behavior = "terminate"
   instance_type = "t2.micro"
   key_name = "EC2-key"
+  user_data = filebase64("08-catalogue.sh")
 
   vpc_security_group_ids = [data.aws_ssm_parameter.catalogue_sg_id.value]
   
