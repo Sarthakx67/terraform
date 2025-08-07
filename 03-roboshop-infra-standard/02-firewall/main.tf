@@ -121,6 +121,17 @@ resource "aws_security_group_rule" "mongodb_catalogue" {
   to_port     = 27017
 }
 
+resource "aws_security_group_rule" "mongodb_cart" {
+  # providing mongodb sg 
+  security_group_id = module.mongodb_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.cart_sg.security_group_id 
+  from_port   = 27017
+  protocol = "tcp"
+  to_port     = 27017
+}
+
 # creating security group rule for catalogue to only connect with vpn on port 22 by ssh
 resource "aws_security_group_rule" "catalogue_vpn" {
   # providing sg 
@@ -141,6 +152,29 @@ resource "aws_security_group_rule" "catalogue_app_alb" {
   protocol          = "tcp"
   source_security_group_id = module.app_alb_sg.security_group_id
   security_group_id = module.catalogue_sg.security_group_id
+}
+
+# creating security group rule for cart to only connect with vpn on port 22 by ssh
+resource "aws_security_group_rule" "cart_vpn" {
+  # providing sg 
+  security_group_id = module.cart_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
+# creating resource to get traffic from app alb to cart servers
+resource "aws_security_group_rule" "cart_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.cart_sg.security_group_id
 }
 
 # giving ssh access for vpn to connect with app alb on port 22

@@ -13,6 +13,11 @@ resource "aws_ssm_parameter" "catalogue_sg_id" {
   type = "String"
   value = module.catalogue_sg.security_group_id
 }
+resource "aws_ssm_parameter" "cart_sg_id" {
+  name = "/${var.project_name}/${var.env}/cart_sg_id"
+  type = "String"
+  value = module.catalogue_sg.security_group_id
+}
 resource "aws_ssm_parameter" "web_sg_id" {
   name = "/${var.project_name}/${var.env}/web_sg_id"
   type = "String"
