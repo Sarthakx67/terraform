@@ -13,10 +13,20 @@ resource "aws_ssm_parameter" "catalogue_sg_id" {
   type = "String"
   value = module.catalogue_sg.security_group_id
 }
+resource "aws_ssm_parameter" "user_sg_id" {
+  name = "/${var.project_name}/${var.env}/user_sg_id"
+  type = "String"
+  value = module.user_sg.security_group_id
+}
+resource "aws_ssm_parameter" "redis_sg_id" {
+  name = "/${var.project_name}/${var.env}/redis_sg_id"
+  type = "String"
+  value = module.redis_sg.security_group_id
+}
 resource "aws_ssm_parameter" "cart_sg_id" {
   name = "/${var.project_name}/${var.env}/cart_sg_id"
   type = "String"
-  value = module.catalogue_sg.security_group_id
+  value = module.cart_sg.security_group_id
 }
 resource "aws_ssm_parameter" "web_sg_id" {
   name = "/${var.project_name}/${var.env}/web_sg_id"

@@ -41,6 +41,45 @@ module "catalogue_sg" {
     }
   )
 }
+module "user_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "user_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "user_sg"
+    }
+  )
+}
+module "redis_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "redis_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "redis_sg"
+    }
+  )
+}
+module "cart_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "cart_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "cart_sg"
+    }
+  )
+}
 # creating application alb security group to distribute traffic betting applications
 
 module "app_alb_sg" {
@@ -109,28 +148,6 @@ resource "aws_security_group_rule" "mongodb_vpn" {
   to_port     = 22
 }
 
-# creating security group rule for mongodb to only connect with catalogue by allowing poet 27107
-resource "aws_security_group_rule" "mongodb_catalogue" {
-  # providing mongodb sg 
-  security_group_id = module.mongodb_sg.security_group_id
-  type = "ingress"
-  # source is the main sg to connect mongodb sg to access connection from
-  source_security_group_id = module.catalogue_sg.security_group_id 
-  from_port   = 27017
-  protocol = "tcp"
-  to_port     = 27017
-}
-
-resource "aws_security_group_rule" "mongodb_cart" {
-  # providing mongodb sg 
-  security_group_id = module.mongodb_sg.security_group_id
-  type = "ingress"
-  # source is the main sg to connect mongodb sg to access connection from
-  source_security_group_id = module.cart_sg.security_group_id 
-  from_port   = 27017
-  protocol = "tcp"
-  to_port     = 27017
-}
 
 # creating security group rule for catalogue to only connect with vpn on port 22 by ssh
 resource "aws_security_group_rule" "catalogue_vpn" {
@@ -144,17 +161,33 @@ resource "aws_security_group_rule" "catalogue_vpn" {
   to_port     = 22
 }
 
-resource "aws_security_group_rule" "catalogue_app_alb" {
-  type              = "ingress"
-  description = "Allowing port number 8080 from APP ALB"
-  from_port         = 8080
-  to_port           = 8080
-  protocol          = "tcp"
-  source_security_group_id = module.app_alb_sg.security_group_id
-  security_group_id = module.catalogue_sg.security_group_id
+
+# creating security group rule for catalogue to only connect with vpn on port 22 by ssh
+resource "aws_security_group_rule" "user_vpn" {
+  # providing sg 
+  security_group_id = module.user_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
 }
 
-# creating security group rule for cart to only connect with vpn on port 22 by ssh
+
+# creating security group rule for catalogue to only connect with vpn on port 22 by ssh
+resource "aws_security_group_rule" "redis_vpn" {
+  # providing sg 
+  security_group_id = module.redis_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
+# creating security group rule for catalogue to only connect with vpn on port 22 by ssh
 resource "aws_security_group_rule" "cart_vpn" {
   # providing sg 
   security_group_id = module.cart_sg.security_group_id
@@ -166,7 +199,67 @@ resource "aws_security_group_rule" "cart_vpn" {
   to_port     = 22
 }
 
-# creating resource to get traffic from app alb to cart servers
+# creating security group rule for mongodb to only connect with catalogue by allowing poet 27107
+resource "aws_security_group_rule" "mongodb_catalogue" {
+  # providing mongodb sg 
+  security_group_id = module.mongodb_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.catalogue_sg.security_group_id 
+  from_port   = 27017
+  protocol = "tcp"
+  to_port     = 27017
+}
+resource "aws_security_group_rule" "mongodb_user" {
+  # providing mongodb sg 
+  security_group_id = module.mongodb_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.user_sg.security_group_id 
+  from_port   = 27017
+  protocol = "tcp"
+  to_port     = 27017
+}
+resource "aws_security_group_rule" "redis_user" {
+  # providing mongodb sg 
+  security_group_id = module.redis_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.user_sg.security_group_id 
+  from_port   = 6379
+  protocol = "tcp"
+  to_port     = 6379
+}
+resource "aws_security_group_rule" "redis_cart" {
+  # providing mongodb sg 
+  security_group_id = module.redis_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.cart_sg.security_group_id 
+  from_port   = 6379
+  protocol = "tcp"
+  to_port     = 6379
+}
+resource "aws_security_group_rule" "catalogue_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.catalogue_sg.security_group_id
+}
+
+resource "aws_security_group_rule" "user_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.user_sg.security_group_id
+}
+
 resource "aws_security_group_rule" "cart_app_alb" {
   type              = "ingress"
   description = "Allowing port number 8080 from APP ALB"
