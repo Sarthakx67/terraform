@@ -15,25 +15,13 @@ variable "common_tags" {
   }
 }
 
-variable "health_check" {
-
-  default = {
-    enabled = true
-    healthy_threshold = 2 # consider as healthy if 2 health checks are success
-    interval = 15
-    matcher = "200-299"
-    path = "/"
-    port = 80
-    protocol = "HTTP"
-    timeout = 5
-    unhealthy_threshold = 3
-  }
-}
-
 variable "target_group_port" {
-  default = 80
+  default = 8080
 }
 
+variable "desired_capacity" {
+  default = 1
+}
 
 variable "launch_template_tags" {
   default = [

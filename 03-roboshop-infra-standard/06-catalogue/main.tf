@@ -42,7 +42,7 @@ resource "aws_autoscaling_group" "catalogue" {
   min_size                  = 1
   health_check_grace_period = 300
   health_check_type         = "ELB"
-  desired_capacity          = 2
+  desired_capacity          = 1
   target_group_arns = [aws_lb_target_group.catalogue_tg.arn] # to map arn of catalogue with autoscaling
   launch_template {
     id    = aws_launch_template.catalogue.id

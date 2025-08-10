@@ -1,10 +1,10 @@
-module "cart" {
+module "user" {
   source = "git::https://github.com/Sarthakx67/Terraform-RoboShop-App.git"
   project_name = var.project_name
   env = var.env
   common_tags = var.common_tags
   #target group
-  health_check = var.health_check
+  # health_check = var.health_check
   target_group_port = var.target_group_port
   vpc_id = data.aws_ssm_parameter.vpc_id.value
 
@@ -23,8 +23,8 @@ module "cart" {
   #autoscalingpolicy, we can give if we want
 
   #listener rule
-  alb_listener_arn = data.aws_ssm_parameter.web_alb_listener_arn.value
-  rule_priority = 10
-  host_header = "stallions.space"
+  alb_listener_arn = data.aws_ssm_parameter.app_alb_listener_arn.value
+  rule_priority = 15
+  host_header = "user.app.stallions.space"
 
 }

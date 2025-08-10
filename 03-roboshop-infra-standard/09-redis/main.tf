@@ -19,7 +19,7 @@ module "records" {
       type = "A"
       ttl = 1
       records = [
-        aws_instance.mongodb_instance.private_ip
+        aws_instance.redis_instance.private_ip
       ]
     }
   ]
