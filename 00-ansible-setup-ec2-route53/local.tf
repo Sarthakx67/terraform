@@ -1,3 +1,3 @@
 locals {
-  ips = module.ec2_ansible
+  ips = resource.aws_instance.shell_instance
 }
