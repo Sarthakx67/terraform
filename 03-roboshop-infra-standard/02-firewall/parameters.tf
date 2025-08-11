@@ -28,6 +28,26 @@ resource "aws_ssm_parameter" "cart_sg_id" {
   type = "String"
   value = module.cart_sg.security_group_id
 }
+resource "aws_ssm_parameter" "shipping_sg_id" {
+  name = "/${var.project_name}/${var.env}/shipping_sg_id"
+  type = "String"
+  value = module.shipping_sg.security_group_id
+}
+resource "aws_ssm_parameter" "mysql_sg_id" {
+  name = "/${var.project_name}/${var.env}/mysql_sg_id"
+  type = "String"
+  value = module.mysql_sg.security_group_id
+}
+resource "aws_ssm_parameter" "rabbitmq_sg_id" {
+  name = "/${var.project_name}/${var.env}/rabbitmq_sg_id"
+  type = "String"
+  value = module.rabbitmq_sg.security_group_id
+}
+resource "aws_ssm_parameter" "payment_sg_id" {
+  name = "/${var.project_name}/${var.env}/payment_sg_id"
+  type = "String"
+  value = module.payment_sg.security_group_id
+}
 resource "aws_ssm_parameter" "web_sg_id" {
   name = "/${var.project_name}/${var.env}/web_sg_id"
   type = "String"

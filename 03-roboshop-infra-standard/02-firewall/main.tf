@@ -80,6 +80,63 @@ module "cart_sg" {
     }
   )
 }
+
+module "mysql_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "mysql_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "mysql_sg"
+    }
+  )
+}
+
+module "shipping_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "shipping_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "shipping_sg"
+    }
+  )
+}
+
+module "rabbitmq_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "rabbitmq_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "rabbitmq_sg"
+    }
+  )
+}
+
+module "payment_sg" {
+  source = "../../02-terraform-modules-projects/03-terraform-aws-security-group"
+  sg_name = "payment_sg"
+  sg_description = "allowing traffic"
+  project_name = var.project_name
+  vpc_id = data.aws_ssm_parameter.roboshop-vpc-id.value
+  common_tags  = merge(
+    var.common_tags,
+    {
+        component = "payment_sg"
+    }
+  )
+}
+
 # creating application alb security group to distribute traffic betting applications
 
 module "app_alb_sg" {
@@ -199,6 +256,50 @@ resource "aws_security_group_rule" "cart_vpn" {
   to_port     = 22
 }
 
+resource "aws_security_group_rule" "mysql_vpn" {
+  # providing sg 
+  security_group_id = module.mysql_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
+resource "aws_security_group_rule" "shipping_vpn" {
+  # providing sg 
+  security_group_id = module.shipping_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
+resource "aws_security_group_rule" "rabbitmq_vpn" {
+  # providing sg 
+  security_group_id = module.rabbitmq_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
+resource "aws_security_group_rule" "payment_vpn" {
+  # providing sg 
+  security_group_id = module.payment_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect sg to access connection from
+  source_security_group_id = module.vpn_sg.security_group_id
+  from_port   = 22
+  protocol = "tcp"
+  to_port     = 22
+}
+
 # creating security group rule for mongodb to only connect with catalogue by allowing poet 27107
 resource "aws_security_group_rule" "mongodb_catalogue" {
   # providing mongodb sg 
@@ -240,6 +341,26 @@ resource "aws_security_group_rule" "redis_cart" {
   protocol = "tcp"
   to_port     = 6379
 }
+resource "aws_security_group_rule" "mysql_shipping" {
+  # providing mongodb sg 
+  security_group_id = module.mysql_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.shipping_sg.security_group_id 
+  from_port   = 3306
+  protocol = "tcp"
+  to_port     = 3306
+}
+resource "aws_security_group_rule" "rabbitmq_payment" {
+  # providing mongodb sg 
+  security_group_id = module.rabbitmq_sg.security_group_id
+  type = "ingress"
+  # source is the main sg to connect mongodb sg to access connection from
+  source_security_group_id = module.payment_sg.security_group_id 
+  from_port   = 5672
+  protocol = "tcp"
+  to_port     = 5672
+}
 resource "aws_security_group_rule" "catalogue_app_alb" {
   type              = "ingress"
   description = "Allowing port number 8080 from APP ALB"
@@ -270,6 +391,26 @@ resource "aws_security_group_rule" "cart_app_alb" {
   security_group_id = module.cart_sg.security_group_id
 }
 
+resource "aws_security_group_rule" "shipping_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.shipping_sg.security_group_id
+}
+
+resource "aws_security_group_rule" "payment_app_alb" {
+  type              = "ingress"
+  description = "Allowing port number 8080 from APP ALB"
+  from_port         = 8080
+  to_port           = 8080
+  protocol          = "tcp"
+  source_security_group_id = module.app_alb_sg.security_group_id
+  security_group_id = module.payment_sg.security_group_id
+}
+
 # giving ssh access for vpn to connect with app alb on port 22
 resource "aws_security_group_rule" "app_alb_vpn" {
   # providing  sg 
@@ -294,36 +435,59 @@ resource "aws_security_group_rule" "app_alb_web" {
   to_port     = 80
 }
 #############################################################
-# resource "aws_security_group_rule" "app_alb_catalogue" {
-#   # providing  sg 
-#   security_group_id = module.app_alb_sg.security_group_id 
-#   type = "ingress"
-#   # source is the main sg to connect  sg to access connection from
-#   source_security_group_id = module.catalogue_sg.security_group_id
-#   from_port   = 80
-#   protocol = "tcp"
-#   to_port     = 80
-# }
-# resource "aws_security_group_rule" "app_alb_user" {
-#   # providing  sg 
-#   security_group_id = module.app_alb_sg.security_group_id 
-#   type = "ingress"
-#   # source is the main sg to connect  sg to access connection from
-#   source_security_group_id = module.user_sg.security_group_id
-#   from_port   = 80
-#   protocol = "tcp"
-#   to_port     = 80
-# }
-# resource "aws_security_group_rule" "app_alb_cart" {
-#   # providing  sg 
-#   security_group_id = module.app_alb_sg.security_group_id 
-#   type = "ingress"
-#   # source is the main sg to connect  sg to access connection from
-#   source_security_group_id = module.cart_sg.security_group_id
-#   from_port   = 80
-#   protocol = "tcp"
-#   to_port     = 80
-# }
+resource "aws_security_group_rule" "app_alb_catalogue" {
+  # providing  sg 
+  security_group_id = module.app_alb_sg.security_group_id 
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  source_security_group_id = module.catalogue_sg.security_group_id
+  from_port   = 80
+  protocol = "tcp"
+  to_port     = 80
+}
+resource "aws_security_group_rule" "app_alb_user" {
+  # providing  sg 
+  security_group_id = module.app_alb_sg.security_group_id 
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  source_security_group_id = module.user_sg.security_group_id
+  from_port   = 80
+  protocol = "tcp"
+  to_port     = 80
+}
+resource "aws_security_group_rule" "app_alb_cart" {
+  # providing  sg 
+  security_group_id = module.app_alb_sg.security_group_id 
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  source_security_group_id = module.cart_sg.security_group_id
+  from_port   = 80
+  protocol = "tcp"
+  to_port     = 80
+}
+
+resource "aws_security_group_rule" "app_alb_shipping" {
+  # providing  sg 
+  security_group_id = module.app_alb_sg.security_group_id 
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  source_security_group_id = module.shipping_sg.security_group_id
+  from_port   = 80
+  protocol = "tcp"
+  to_port     = 80
+}
+
+resource "aws_security_group_rule" "app_alb_payment" {
+  # providing  sg 
+  security_group_id = module.app_alb_sg.security_group_id 
+  type = "ingress"
+  # source is the main sg to connect  sg to access connection from
+  source_security_group_id = module.payment_sg.security_group_id
+  from_port   = 80
+  protocol = "tcp"
+  to_port     = 80
+}
+
 # creating sg rule for allowing web-server to only connect with web-alb on port 80
 resource "aws_security_group_rule" "web_web_alb" {
   # providing  sg 
