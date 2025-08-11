@@ -1,7 +1,7 @@
 variable "common_tags" {
   default = {
     Project = "roboshop"
-    component = "redis"
+    component = "rabbitmq"
     Environment = "DEV"
     Terraform = "true"
   }
