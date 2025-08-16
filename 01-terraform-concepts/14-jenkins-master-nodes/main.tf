@@ -4,6 +4,9 @@ resource "aws_instance" "master_node" {
   key_name = "EC2-key"
   vpc_security_group_ids = [aws_security_group.allow_master.id]
   user_data = filebase64("master-node.sh")
+  root_block_device {
+  volume_size = 10 # 10 gb
+  }
   tags = {
     Name = "master_node"
   }
@@ -15,6 +18,9 @@ resource "aws_instance" "slave_node" {
   key_name = "EC2-key"
   vpc_security_group_ids = [aws_security_group.allow_master.id]
   user_data = filebase64("slave-node.sh")
+  root_block_device {
+  volume_size = 10 # 10 gb
+  }
   tags = {
     Name = each.key
   }
