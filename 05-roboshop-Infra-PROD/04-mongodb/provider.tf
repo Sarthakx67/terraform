@@ -7,7 +7,7 @@ terraform {
   }
   backend "s3" {
     bucket   = "sarthak-remote-tfstate"
-    key = "app-alb-dev"
+    key = "mongodb-prod"
     region = "ap-south-1"
     dynamodb_table = "sarthak-tfstate-lock"
   }
