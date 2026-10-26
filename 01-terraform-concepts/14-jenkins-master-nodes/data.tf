@@ -22,3 +22,6 @@ data "aws_ami" "roboshop-ami" {
     values = ["hvm"]
   }
 }
+data "http" "myip" {
+  url = "https://ipv4.icanhazip.com"
+}

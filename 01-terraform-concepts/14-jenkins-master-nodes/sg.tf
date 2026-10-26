@@ -1,6 +1,9 @@
+############################
+# Security Group
+############################
 resource "aws_security_group" "allow_master" {
   name        = "allow_master"
-  description = "Allow port 8080 for master node"
+  description = "Allow access to master node"
   vpc_id      = data.aws_vpc.default.id
 
   tags = {
@@ -8,23 +11,30 @@ resource "aws_security_group" "allow_master" {
   }
 }
 
-resource "aws_vpc_security_group_ingress_rule" "allow_8080" {
+############################
+# Ingress: Allow All Ports From My IP
+############################
+resource "aws_security_group_rule" "vpn" {
+  type              = "ingress"
   security_group_id = aws_security_group.allow_master.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 8080
-  ip_protocol       = "tcp"
-  to_port           = 8080
-}
-resource "aws_vpc_security_group_ingress_rule" "allow_22" {
-  security_group_id = aws_security_group.allow_master.id
-  cidr_ipv4         = "0.0.0.0/0"
-  from_port         = 22
-  ip_protocol       = "tcp"
-  to_port           = 22
+
+  cidr_blocks = ["${chomp(data.http.myip.response_body)}/32"]
+
+  from_port = 0
+  to_port   = 65535
+  protocol  = "tcp"
 }
 
-resource "aws_vpc_security_group_egress_rule" "allow_all_traffic_ipv4" {
+############################
+# Egress: Allow All Outbound Traffic
+############################
+resource "aws_security_group_rule" "allow_all_egress" {
+  type              = "egress"
   security_group_id = aws_security_group.allow_master.id
-  cidr_ipv4         = "0.0.0.0/0"
-  ip_protocol       = "-1" # semantically equivalent to all ports
+
+  cidr_blocks = ["0.0.0.0/0"]
+
+  from_port = 0
+  to_port   = 0
+  protocol  = "-1"
 }

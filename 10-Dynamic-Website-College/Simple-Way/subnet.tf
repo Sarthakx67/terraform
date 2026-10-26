@@ -9,12 +9,17 @@ resource "aws_subnet" "dynamic-website-subnet" {
 
 resource "aws_internet_gateway" "igw" {
   vpc_id = aws_vpc.dynamic-website-vpc.id
-  tags   = { Name = "dynamic-website-igw" }
-}
 
+  tags = {
+    Name = "dynamic-website-igw"
+  }
+}
 resource "aws_route_table" "public" {
   vpc_id = aws_vpc.dynamic-website-vpc.id
-  tags   = { Name = "public-rt" }
+
+  tags = {
+    Name = "public-rt"
+  }
 }
 
 resource "aws_route" "website_route" {
